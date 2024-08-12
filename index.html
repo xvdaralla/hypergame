@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Forca</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        const words = [   'paris', 'gato', 'lagoa', 'primavera', 'piano', 'livro', 'flor', 'computador', 'estrela', 'oceano', 'montanha', 'cachorro', 'feliz', 'cidade', 'futebol', 'escola', 'carro', 'sol', 'jardim', 'telefone', 'amigo', 'avião'];
+        let chosenWord, displayedWord, attempts, maxAttempts;
+
+        function startGame() {
+            chosenWord = words[Math.floor(Math.random() * words.length)];
+            displayedWord = '_'.repeat(chosenWord.length);
+            attempts = 0;
+            maxAttempts = 6;
+            document.getElementById('wordDisplay').textContent = displayedWord;
+            document.getElementById('message').textContent = '';
+            document.getElementById('attempts').textContent = `Tentativas restantes: ${maxAttempts}`;
+            document.getElementById('letterInput').value = '';
+        }
+
+        function guessLetter() {
+            const letter = document.getElementById('letterInput').value.toLowerCase();
+            if (letter.length !== 1 || !letter.match(/[a-z]/i)) {
+                alert('Por favor, insira uma letra válida.');
+                return;
+            }
+            
+            let newDisplayedWord = '';
+            let correctGuess = false;
+
+            for (let i = 0; i < chosenWord.length; i++) {
+                if (chosenWord[i] === letter) {
+                    newDisplayedWord += letter;
+                    correctGuess = true;
+                } else {
+                    newDisplayedWord += displayedWord[i];
+                }
+            }
+
+            if (!correctGuess) {
+                attempts++;
+            }
+
+            displayedWord = newDisplayedWord;
+            document.getElementById('wordDisplay').textContent = displayedWord;
+            document.getElementById('attempts').textContent = `Tentativas restantes: ${maxAttempts - attempts}`;
+
+            if (displayedWord === chosenWord) {
+                document.getElementById('message').textContent = 'Você ganhou!';
+            } else if (attempts >= maxAttempts) {
+                document.getElementById('message').textContent = `Você perdeu! A palavra era ${chosenWord}.`;
+            }
+
+            document.getElementById('letterInput').value = '';
+        }
+
+        window.onload = startGame;
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('patern.png') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
+            background-color: rgba(255, 255, 255, 0); /* Semi-transparente para melhor legibilidade */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #wordDisplay {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        #message {
+            font-size: 18px;
+            color: red;
+        }
+
+        #letterInput {
+            font-size: 18px;
+            width: 30px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hyper Game (Forca)</h1>
+        <div id="wordDisplay"></div>
+        <div id="message"></div>
+        <input type="text" id="letterInput" maxlength="1" />
+        <button onclick="guessLetter()">Adivinhar Letra</button>
+        <div id="attempts"></div>
+        <button onclick="startGame()">Novo Jogo</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
